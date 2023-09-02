@@ -5,7 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Request
+  Req
 } from '@nestjs/common'
 import { CreateUserDto } from '../users/dto/create-user.dto'
 import { AuthService } from './auth.service'
@@ -16,10 +16,9 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Public()
-  @HttpCode(HttpStatus.OK)
   @Post('login')
-  signIn(@Body() signInDto: { email: string; password: string }) {
-    return this.authService.signIn(signInDto.email, signInDto.password)
+  async signIn(@Body() signInDto: { email: string; password: string }) {
+    return await this.authService.signIn(signInDto.email, signInDto.password)
   }
 
   @Public()
@@ -30,7 +29,7 @@ export class AuthController {
   }
 
   @Get('profile')
-  getProfile(@Request() req) {
+  getProfile(@Req() req) {
     return req.user
   }
 }

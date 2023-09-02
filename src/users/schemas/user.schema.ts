@@ -21,22 +21,9 @@ export class User {
 
   @Prop({ default: UserStatus.Pending, enum: UserStatus })
   status: UserStatus
+
+  @Prop()
+  refreshToken: string[]
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
-
-// // Password hashing middleware
-// UserSchema.pre('save', async function (next) {
-//   const user = this
-//   if (user.isModified('password')) {
-//     user.password = await bcrypt.hash(user.password, 8)
-//   }
-//   next()
-// })
-
-// UserSchema.methods.comparePassword = async function (
-//   candidatePassword: string
-// ): Promise<boolean> {
-//   const user = this
-//   return bcrypt.compare(candidatePassword, user.password)
-// }

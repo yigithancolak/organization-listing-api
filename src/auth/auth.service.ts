@@ -18,9 +18,12 @@ export class AuthService {
     ) {
       throw new BadRequestException('Invalid credentials')
     }
-    const payload = { email: user.email, sub: user._id }
+    // const payload = { email: user.email, sub: user._id }
+
+    const { accessToken } = await this.getTokens(user._id, user.email)
+
     return {
-      access_token: this.jwtService.sign(payload)
+      accessToken
     }
   }
 
@@ -38,4 +41,41 @@ export class AuthService {
       access_token: this.jwtService.sign(payload)
     }
   }
+
+  async getTokens(userId: string, username: string) {
+    const [
+      accessToken
+      // refreshToken
+    ] = await Promise.all([
+      this.jwtService.signAsync(
+        {
+          sub: userId,
+          username
+        },
+        {
+          secret: process.env.ACCESS_TOKEN_SECRET,
+          expiresIn: 60 * 60 * 24 * 7
+        }
+      ),
+      this.jwtService.signAsync(
+        {
+          sub: userId,
+          username
+        },
+        {
+          secret: process.env.REFRESH_TOKEN_SECRET,
+          expiresIn: 60 * 60 * 24 * 7
+        }
+      )
+    ])
+
+    return {
+      accessToken
+      // refreshToken
+    }
+  }
+
+  // async getUserByRefreshToken(refreshToken: string) {
+  //   return await this.usersService.getUserByRefreshToken(refreshToken)
+  // }
 }
