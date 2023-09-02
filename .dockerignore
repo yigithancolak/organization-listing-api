@@ -1,2 +1,9 @@
-node_modules
+**/*.test.ts
+**/*.spec.ts
+docs/
+.git/
+node_modules/
+npm-debug.log
+.dockerignore
+Dockerfile
 dist/
