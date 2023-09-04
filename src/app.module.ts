@@ -5,7 +5,8 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { AuthModule } from './auth/auth.module'
 import { CatsModule } from './cats/cats.module'
-import { CompaniesModule } from './companies/companies.module';
+import { CompaniesModule } from './companies/companies.module'
+import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [
@@ -13,7 +14,8 @@ import { CompaniesModule } from './companies/companies.module';
     MongooseModule.forRoot(process.env.MONGO_DB_URI),
     CatsModule,
     AuthModule,
-    CompaniesModule
+    CompaniesModule,
+    StorageModule
   ],
   controllers: [AppController],
   providers: [AppService]

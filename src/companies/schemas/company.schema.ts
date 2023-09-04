@@ -31,7 +31,7 @@ class WorkingHours {
 @Schema({ _id: false })
 class Files {
   @Prop([String])
-  pictures: string[]
+  images: string[]
 
   @Prop()
   pdf: string
@@ -63,10 +63,10 @@ class Contacts {
 
 @Schema({ timestamps: true })
 export class Company {
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true })
   name: string
 
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true })
   description: string
 
   @Prop({ required: true, unique: true })

@@ -55,7 +55,7 @@ export class CreateCompanyDto {
 
   @IsOptional()
   readonly files?: {
-    pictures?: string[]
+    images?: string[]
     pdf?: string
   }
 

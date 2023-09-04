@@ -1,36 +1,67 @@
-import { Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
+import { StorageService } from 'src/storage/storage.service'
 import { CreateCompanyDto } from './dto/create-company.dto'
-import { UpdateCompanyDto } from './dto/update-company.dto'
 import { Company, CompanyDocument } from './schemas/company.schema'
 
 @Injectable()
 export class CompaniesService {
   constructor(
-    @InjectModel(Company.name) private companyModel: Model<CompanyDocument>
+    @InjectModel(Company.name) private companyModel: Model<CompanyDocument>,
+    private storageService: StorageService
   ) {}
 
   async create(createCompanyDto: CreateCompanyDto) {
     const createCompany = new this.companyModel({
       ...createCompanyDto
     })
-    return await createCompany.save()
+
+    try {
+      return await createCompany.save()
+    } catch (error) {
+      throw new BadRequestException(error.message)
+    }
   }
 
   findAll() {
     return `This action returns all companies`
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} company`
+  async findOneById(id: string): Promise<Company> {
+    const foundCompany = await this.companyModel.findOne({ _id: id })
+
+    if (!foundCompany) {
+      throw new BadRequestException(`No company found with ID: ${id}`)
+    }
+
+    return foundCompany
   }
 
-  update(id: number, updateCompanyDto: UpdateCompanyDto) {
-    return `This action updates a #${id} company`
+  async updateCompanyImages(id: string, path: string) {
+    const foundCompany = await this.companyModel.findOne({ _id: id })
+
+    if (!foundCompany) {
+      throw new BadRequestException('No id found for update company images')
+    }
+
+    if (!foundCompany.files.images.includes(path)) {
+      foundCompany.files.images.push(path)
+
+      await foundCompany.save()
+    }
+    return foundCompany
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} company`
+  async removeImage(id: string, path: string) {
+    const foundCompany = await this.companyModel.findOne({ _id: id })
+
+    foundCompany.files.images = foundCompany.files.images.filter(
+      (url) => !url.includes(path)
+    )
+
+    await foundCompany.save()
+
+    return `Image with path ${path} removed from company ${id}`
   }
 }
