@@ -58,16 +58,22 @@ class Location {
 @Schema({ _id: false })
 class Contacts {
   @Prop()
-  tel: string
+  company_phone: string
 
   @Prop()
   email: string
+}
 
-  @Prop([String])
-  social_links: string[]
+@Schema({ _id: false })
+class SocialLinks {
+  @Prop()
+  twitter: string
 
   @Prop()
-  website: string
+  facebook: string
+
+  @Prop()
+  linkedin: string
 }
 
 @Schema({ timestamps: true })
@@ -102,6 +108,9 @@ export class Company {
   @Prop({ type: Contacts })
   contacts: Contacts
 
+  @Prop({ type: SocialLinks })
+  social_links: SocialLinks
+
   @Prop([WorkingHours])
   working_hours: WorkingHours[]
 
@@ -113,6 +122,9 @@ export class Company {
 
   @Prop([String])
   tags: string[]
+
+  @Prop()
+  website: string
 }
 
 export const CompanySchema = SchemaFactory.createForClass(Company)
