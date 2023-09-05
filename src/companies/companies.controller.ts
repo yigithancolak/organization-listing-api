@@ -16,6 +16,7 @@ import { FileInterceptor } from '@nestjs/platform-express'
 import { StorageService } from 'src/storage/storage.service'
 import { CompaniesService } from './companies.service'
 import { CreateCompanyDto } from './dto/create-company.dto'
+import { GetCompaniesDto } from './dto/get-companies.dto'
 
 @Controller('companies')
 export class CompaniesController {
@@ -25,8 +26,12 @@ export class CompaniesController {
   ) {}
 
   @Get()
-  async getCompanies() {
-    return await this.companiesService.findAll()
+  async getCompanies(@Body() body: GetCompaniesDto) {
+    if (!body) {
+      return await this.companiesService.find()
+    }
+
+    return await this.companiesService.find(body)
   }
 
   @Post()

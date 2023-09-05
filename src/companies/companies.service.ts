@@ -7,6 +7,7 @@ import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { StorageService } from 'src/storage/storage.service'
 import { CreateCompanyDto } from './dto/create-company.dto'
+import { GetCompaniesDto } from './dto/get-companies.dto'
 import { Company, CompanyDocument } from './schemas/company.schema'
 
 @Injectable()
@@ -28,8 +29,20 @@ export class CompaniesService {
     }
   }
 
-  async findAll() {
-    return await this.companyModel.find()
+  async find(filters?: GetCompaniesDto) {
+    const { category, city, country, page, perPage, workspace } = filters
+    const query = {}
+
+    if (category) query['category'] = category
+    if (workspace) query['workspace'] = { $in: workspace }
+    if (city) query['location.city'] = city
+    if (country) query['location.country'] = country
+
+    if (page && perPage) {
+      const skip = (page - 1) * perPage
+      return await this.companyModel.find(query).skip(skip).limit(perPage)
+    }
+    return await this.companyModel.find(query)
   }
 
   async findOneById(id: string): Promise<Company> {
