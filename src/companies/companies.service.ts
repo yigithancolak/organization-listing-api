@@ -28,8 +28,8 @@ export class CompaniesService {
     }
   }
 
-  findAll() {
-    return `This action returns all companies`
+  async findAll() {
+    return await this.companyModel.find()
   }
 
   async findOneById(id: string): Promise<Company> {

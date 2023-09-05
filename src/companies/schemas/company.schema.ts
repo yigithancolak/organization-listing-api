@@ -47,6 +47,15 @@ class Coordinates {
 }
 
 @Schema({ _id: false })
+class Location {
+  @Prop()
+  country: string
+
+  @Prop()
+  city: string
+}
+
+@Schema({ _id: false })
 class Contacts {
   @Prop()
   tel: string
@@ -98,6 +107,9 @@ export class Company {
 
   @Prop({ type: Coordinates })
   coordinates: Coordinates
+
+  @Prop({ type: Location })
+  location: Location
 
   @Prop([String])
   tags: string[]

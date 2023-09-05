@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   MaxFileSizeValidator,
   Param,
   ParseFilePipe,
@@ -23,9 +24,14 @@ export class CompaniesController {
     private readonly storageService: StorageService
   ) {}
 
+  @Get()
+  async getCompanies() {
+    return await this.companiesService.findAll()
+  }
+
   @Post()
-  create(@Body() createCompanyDto: CreateCompanyDto) {
-    return this.companiesService.create(createCompanyDto)
+  async createCompany(@Body() createCompanyDto: CreateCompanyDto) {
+    return await this.companiesService.create(createCompanyDto)
   }
 
   //IMAGE FILES
@@ -113,7 +119,7 @@ export class CompaniesController {
   //LOGO
   @Post(':id/logo')
   @UseInterceptors(FileInterceptor('file'))
-  async updateLogo(
+  async addLogo(
     @Param('id') id: string,
     @UploadedFile(
       new ParseFilePipe({
@@ -139,6 +145,44 @@ export class CompaniesController {
         file.buffer,
         [{ mediaId: file.originalname }]
       )
+
+      await this.companiesService.addLogoPath(id, cloudDestination)
+      return { message: 'File uploaded successfully' }
+    } catch (error) {
+      throw new Error(error.message)
+    }
+  }
+
+  @Patch(':id/logo')
+  @UseInterceptors(FileInterceptor('file'))
+  async updateLogo(
+    @Param('id') id: string,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 1024 * 1024 })
+          // new FileTypeValidator({ fileType: 'image/jpeg' })
+        ]
+      })
+    )
+    file: Express.Multer.File,
+    @Body('path') path: string
+  ) {
+    if (!file.mimetype.startsWith('image/')) {
+      throw new BadRequestException('Only image files are allowed')
+    }
+
+    try {
+      const cloudDestination = `${id}/logo/${file.originalname}` //folder: id/logo, file name: original file name
+
+      await this.storageService.save(
+        cloudDestination,
+        file.mimetype,
+        file.buffer,
+        [{ mediaId: file.originalname }]
+      )
+
+      await this.storageService.delete(path)
 
       await this.companiesService.addLogoPath(id, cloudDestination)
       return { message: 'File uploaded successfully' }
