@@ -1,6 +1,7 @@
 import { Type } from 'class-transformer'
 import {
   IsArray,
+  IsDefined,
   IsEmail,
   IsEnum,
   IsNotEmpty,
@@ -59,9 +60,13 @@ export class CreateCompanyDto {
     pdf?: string
   }
 
-  @IsOptional()
+  @IsArray()
+  @IsDefined()
+  readonly workspace: string[]
+
   @IsString()
-  readonly workspace?: string
+  @IsDefined()
+  readonly category: string
 
   @IsOptional()
   @ValidateNested()

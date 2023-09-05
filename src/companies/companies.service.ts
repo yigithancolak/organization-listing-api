@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException
+} from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { StorageService } from 'src/storage/storage.service'
@@ -38,11 +42,15 @@ export class CompaniesService {
     return foundCompany
   }
 
-  async updateCompanyImages(id: string, path: string) {
+  async addImagePath(id: string, path: string) {
     const foundCompany = await this.companyModel.findOne({ _id: id })
 
     if (!foundCompany) {
-      throw new BadRequestException('No id found for update company images')
+      throw new NotFoundException()
+    }
+
+    if (!foundCompany.files) {
+      foundCompany.files = { images: [], pdf: '' } // Initialize with an empty images array (and you can add other properties if needed)
     }
 
     if (!foundCompany.files.images.includes(path)) {
@@ -51,6 +59,23 @@ export class CompaniesService {
       await foundCompany.save()
     }
     return foundCompany
+  }
+
+  async updateImagePath(id: string, oldPath: string, newPath: string) {
+    const foundCompany = await this.companyModel.findOne({ _id: id })
+
+    if (!foundCompany) {
+      throw new NotFoundException()
+    }
+
+    foundCompany.files.images = foundCompany.files.images.map((path) => {
+      if (path === oldPath) {
+        return newPath
+      }
+      return path
+    })
+
+    return await foundCompany.save()
   }
 
   async removeImage(id: string, path: string) {
@@ -63,5 +88,14 @@ export class CompaniesService {
     await foundCompany.save()
 
     return `Image with path ${path} removed from company ${id}`
+  }
+
+  async addLogoPath(id: string, path: string) {
+    const foundCompany = await this.companyModel.findOne({ _id: id })
+
+    foundCompany.logo = path
+
+    await foundCompany.save()
+    return `Logo with path ${path} added to company ${id}`
   }
 }

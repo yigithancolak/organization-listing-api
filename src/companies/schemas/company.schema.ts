@@ -85,7 +85,10 @@ export class Company {
   files: Files
 
   @Prop()
-  workspace: string
+  category: string
+
+  @Prop([String])
+  workspace: string[]
 
   @Prop({ type: Contacts })
   contacts: Contacts
