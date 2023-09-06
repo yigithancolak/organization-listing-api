@@ -17,8 +17,9 @@ export class CompaniesService {
     private storageService: StorageService
   ) {}
 
-  async create(createCompanyDto: CreateCompanyDto) {
+  async create(createCompanyDto: CreateCompanyDto, userId: string) {
     const createCompany = new this.companyModel({
+      owner: userId,
       ...createCompanyDto
     })
 

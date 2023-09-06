@@ -4,22 +4,22 @@ import {
   IsDefined,
   IsEmail,
   IsEnum,
+  IsNumber,
   IsOptional,
   IsString,
   IsUrl,
   ValidateNested
 } from 'class-validator'
-import { Types } from 'mongoose'
 import { Day } from '../schemas/company.schema'
 
 class ContactsDto {
   @IsOptional()
   @IsString()
-  readonly company_phone?: string
+  readonly fullname?: string
 
-  @IsDefined()
+  @IsOptional()
   @IsEmail()
-  readonly email: string
+  readonly email?: string
 }
 
 class SocialLinksDto {
@@ -47,11 +47,24 @@ class WorkingHoursDto {
   readonly hours: string
 }
 
+class FilesDto {
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  readonly images?: string[]
+
+  @IsOptional()
+  @IsString()
+  readonly pdf?: string
+}
+
 class CoordinatesDto {
   @IsDefined()
+  @IsNumber()
   readonly lat: number
 
   @IsDefined()
+  @IsNumber()
   readonly long: number
 }
 
@@ -79,7 +92,17 @@ export class CreateCompanyDto {
   readonly email: string
 
   @IsDefined()
-  readonly owner: string | Types.ObjectId // Ensure to import Types from 'mongoose'
+  @IsString()
+  readonly company_phone: string
+
+  @IsOptional()
+  @IsString()
+  readonly logo?: string
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => FilesDto)
+  readonly files?: FilesDto
 
   @IsDefined()
   @IsString()

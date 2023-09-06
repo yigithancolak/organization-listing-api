@@ -9,6 +9,7 @@ import {
   ParseFilePipe,
   Patch,
   Post,
+  Req,
   UploadedFile,
   UseInterceptors
 } from '@nestjs/common'
@@ -35,8 +36,10 @@ export class CompaniesController {
   }
 
   @Post()
-  async createCompany(@Body() createCompanyDto: CreateCompanyDto) {
-    return await this.companiesService.create(createCompanyDto)
+  async createCompany(@Body() createCompanyDto: CreateCompanyDto, @Req() req) {
+    const userId = req.user.sub as string
+
+    return await this.companiesService.create(createCompanyDto, userId)
   }
 
   //IMAGE FILES

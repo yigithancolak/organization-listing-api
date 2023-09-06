@@ -58,7 +58,7 @@ class Location {
 @Schema({ _id: false })
 class Contacts {
   @Prop()
-  company_phone: string
+  fullname: string
 
   @Prop()
   email: string
@@ -86,6 +86,9 @@ export class Company {
 
   @Prop({ required: true, unique: true })
   email: string
+
+  @Prop()
+  company_phone: string
 
   @Prop({ default: CompanyStatus.Pending, enum: CompanyStatus })
   status: CompanyStatus
