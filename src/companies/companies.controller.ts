@@ -1,4 +1,5 @@
 import {
+  BadGatewayException,
   BadRequestException,
   Body,
   Controller,
@@ -94,7 +95,7 @@ export class CompaniesController {
 
     try {
       const cloudDestination = `${id}/${fileType}/${file.originalname}` //folder: id, file name: original file name
-      console.log(cloudDestination)
+      // console.log(cloudDestination)
 
       await this.storageService.save(
         cloudDestination,
@@ -145,7 +146,7 @@ export class CompaniesController {
 
     try {
       const cloudDestination = `${id}/logo/${file.originalname}` //folder: id/logo, file name: original file name
-      console.log(cloudDestination)
+      // console.log(cloudDestination)
 
       await this.storageService.save(
         cloudDestination,
@@ -157,7 +158,9 @@ export class CompaniesController {
       await this.companiesService.addLogoPath(id, cloudDestination)
       return { message: 'File uploaded successfully' }
     } catch (error) {
-      throw new Error(error.message)
+      // console.log('error: ', error)
+
+      throw new BadGatewayException(error.message)
     }
   }
 
