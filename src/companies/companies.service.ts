@@ -31,9 +31,10 @@ export class CompaniesService {
   }
 
   async find(filters?: GetCompaniesDto) {
-    const { category, city, country, page, perPage, workspace } = filters
+    const { category, city, country, page, perPage, workspace, name } = filters
     const query = {}
 
+    if (name) query['name'] = { $regex: new RegExp(name, 'i') }
     if (category) query['category'] = category
     if (workspace) query['workspace'] = { $in: workspace }
     if (city) query['location.city'] = city

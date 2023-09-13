@@ -2,6 +2,10 @@ import { IsArray, IsOptional, IsPositive, IsString } from 'class-validator'
 
 export class GetCompaniesDto {
   @IsOptional()
+  @IsString()
+  name?: string
+
+  @IsOptional()
   @IsPositive()
   page?: number
 

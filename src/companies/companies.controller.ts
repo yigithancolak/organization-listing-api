@@ -4,7 +4,6 @@ import {
   Body,
   Controller,
   Delete,
-  Get,
   MaxFileSizeValidator,
   Param,
   ParseFilePipe,
@@ -27,7 +26,7 @@ export class CompaniesController {
     private readonly storageService: StorageService
   ) {}
 
-  @Get()
+  @Post('/search')
   async getCompanies(@Body() body: GetCompaniesDto) {
     if (!body) {
       return await this.companiesService.find()
