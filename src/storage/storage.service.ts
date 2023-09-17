@@ -44,6 +44,22 @@ export class StorageService {
       .delete({ ignoreNotFound: true })
   }
 
+  async deleteWithPrefix(companyId: string) {
+    console.log(companyId)
+
+    const [files] = await this.storage
+      .bucket(this.bucket)
+      .getFiles({ prefix: `${companyId}/` })
+
+    console.log(files)
+
+    for (const file of files) {
+      // await this.delete(file as string)
+      console.log(file.name)
+      this.delete(file.name)
+    }
+  }
+
   async get(path: string): Promise<StorageFile> {
     const fileResponse: DownloadResponse = await this.storage
       .bucket(this.bucket)

@@ -42,7 +42,7 @@ export class AuthService {
     }
   }
 
-  async getTokens(userId: string, username: string) {
+  async getTokens(userId: string, email: string) {
     const [
       accessToken
       // refreshToken
@@ -50,7 +50,7 @@ export class AuthService {
       this.jwtService.signAsync(
         {
           sub: userId,
-          username
+          email
         },
         {
           secret: process.env.ACCESS_TOKEN_SECRET,
@@ -60,7 +60,7 @@ export class AuthService {
       this.jwtService.signAsync(
         {
           sub: userId,
-          username
+          email
         },
         {
           secret: process.env.REFRESH_TOKEN_SECRET,
@@ -75,7 +75,9 @@ export class AuthService {
     }
   }
 
-  // async getUserByRefreshToken(refreshToken: string) {
-  //   return await this.usersService.getUserByRefreshToken(refreshToken)
-  // }
+  async deleteUser(id: string) {
+    const deletedUser = await this.usersService.deleteUserWithCompanies(id)
+
+    return deletedUser
+  }
 }

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -31,5 +32,12 @@ export class AuthController {
   @Get('profile')
   getProfile(@Req() req) {
     return req.user
+  }
+
+  @Delete('profile')
+  async deleteProfile(@Req() req) {
+    const id = req.user.sub
+
+    return await this.authService.deleteUser(id)
   }
 }

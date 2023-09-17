@@ -1,14 +1,18 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import * as bcrypt from 'bcrypt'
 import { Model } from 'mongoose'
+import { Company, CompanyDocument } from 'src/companies/schemas/company.schema'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { User, UserDocument } from './schemas/user.schema'
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(Company.name) private companyModel: Model<CompanyDocument>
+  ) {}
 
   private async hashPassword(password: string): Promise<string> {
     return bcrypt.hash(password, 8)
@@ -58,9 +62,31 @@ export class UsersService {
     return bcrypt.compare(candidatePassword, userPassword)
   }
 
-  // async getUserByRefreshToken(refreshToken: string) {
-  //   return await this.userModel.findOne({
-  //     refreshToken: { $in: [refreshToken] }
-  //   })
-  // }
+  async deleteUserWithCompanies(userId: string) {
+    const userToDelete = await this.findOneById(userId)
+
+    if (!userToDelete) {
+      throw new NotFoundException('user not found')
+    }
+
+    const session = await this.userModel.startSession()
+    session.startTransaction()
+
+    try {
+      //deleting the companies that user has and the user
+      await this.companyModel.deleteMany({ owner: userId }).session(session)
+      await this.userModel.findByIdAndDelete(userId).session(session)
+
+      // If everything looks good, commit the changes.
+      await session.commitTransaction()
+    } catch (error) {
+      // If something goes wrong, abort the transaction and roll back.
+      await session.abortTransaction()
+      throw error
+    } finally {
+      session.endSession()
+    }
+
+    return userToDelete
+  }
 }

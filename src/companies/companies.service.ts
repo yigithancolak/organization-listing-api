@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException
 } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
@@ -91,6 +92,22 @@ export class CompaniesService {
     })
 
     return await foundCompany.save()
+  }
+
+  async delete(companyId: string) {
+    const foundCompany = await this.companyModel.findOne({ _id: companyId })
+    if (!foundCompany) {
+      throw new NotFoundException('company not found')
+    }
+
+    try {
+      await this.storageService.deleteWithPrefix(companyId)
+      await foundCompany.deleteOne()
+    } catch (error) {
+      throw new InternalServerErrorException(
+        `error while deleting company: ${error.message}`
+      )
+    }
   }
 
   async removeImage(id: string, path: string) {

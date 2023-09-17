@@ -4,6 +4,7 @@ import {
   Body,
   Controller,
   Delete,
+  InternalServerErrorException,
   MaxFileSizeValidator,
   Param,
   ParseFilePipe,
@@ -40,6 +41,11 @@ export class CompaniesController {
     const userId = req.user.sub as string
 
     return await this.companiesService.create(createCompanyDto, userId)
+  }
+
+  @Delete(':id')
+  async deleteCompany(@Param('id') id: string) {
+    return await this.companiesService.delete(id)
   }
 
   //IMAGE FILES
@@ -120,7 +126,7 @@ export class CompaniesController {
 
       return { message: 'File deleted successfully.' }
     } catch (error) {
-      throw new Error(error.message)
+      throw new InternalServerErrorException(error.message)
     }
   }
 

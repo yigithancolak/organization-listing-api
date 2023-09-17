@@ -14,7 +14,7 @@ import { Company, CompanySchema } from './schemas/company.schema'
     StorageModule,
     ThrottlerModule.forRoot({
       ttl: 60, //in 60 seconds
-      limit: 15 // max 3 request can be accepted
+      limit: 15 // max 15 request can be accepted
     })
   ],
   controllers: [CompaniesController],
