@@ -6,12 +6,16 @@ import { AppService } from './app.service'
 import { AuthModule } from './auth/auth.module'
 import { CatsModule } from './cats/cats.module'
 import { CompaniesModule } from './companies/companies.module'
-import { StorageModule } from './storage/storage.module';
+import { StorageModule } from './storage/storage.module'
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    MongooseModule.forRoot(process.env.MONGO_DB_URI),
+    MongooseModule.forRoot(
+      process.env.NODE_ENV === 'production'
+        ? process.env.MONGO_DB_URI
+        : 'mongodb://localhost:27017/listing'
+    ),
     CatsModule,
     AuthModule,
     CompaniesModule,
