@@ -1,7 +1,9 @@
+import gcsecrets from 'gcsecrets.json'
+
 const StorageConfig = {
-  projectId: process.env.PROJECT_ID,
-  private_key: process.env.PRIVATE_KEY.split(String.raw`\n`).join('\n'),
-  client_email: process.env.CLIENT_EMAIL,
+  projectId: gcsecrets.project_id,
+  private_key: gcsecrets.private_key,
+  client_email: gcsecrets.client_email,
   mediaBucket: process.env.STORAGE_MEDIA_BUCKET
 }
 

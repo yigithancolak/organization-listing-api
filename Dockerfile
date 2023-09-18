@@ -1,13 +1,11 @@
-FROM node:20.5-alpine as development
+FROM node:20.5-alpine as build
 
 WORKDIR /usr/src/app
 
-COPY package*.json .
-
+COPY package*.json ./
 RUN npm install 
-
 COPY . .
-
+COPY gcsecrets.json ./
 RUN npm run build
 
 #
@@ -19,11 +17,10 @@ ENV NODE_ENV=${NODE_ENV}
 
 WORKDIR /usr/src/app
 
-COPY package*.json .
-
+COPY package*.json ./
 RUN npm ci --only=production
-
-COPY --from=development /usr/src/app/dist ./dist
+COPY --from=build /usr/src/app/dist ./dist
+COPY --from=build /usr/src/app/gcsecrets.json ./
 
 EXPOSE 8888
 
