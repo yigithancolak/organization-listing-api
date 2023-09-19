@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common'
+import { MiddlewareConsumer, Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { MongooseModule } from '@nestjs/mongoose'
 import { AppController } from './app.controller'
@@ -6,6 +6,7 @@ import { AppService } from './app.service'
 import { AuthModule } from './auth/auth.module'
 import { CatsModule } from './cats/cats.module'
 import { CompaniesModule } from './companies/companies.module'
+import { LogsMiddleware } from './logs.middleware'
 import { StorageModule } from './storage/storage.module'
 
 @Module({
@@ -24,4 +25,8 @@ import { StorageModule } from './storage/storage.module'
   controllers: [AppController],
   providers: [AppService]
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LogsMiddleware).forRoutes('*')
+  }
+}

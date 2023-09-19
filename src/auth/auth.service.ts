@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException
+} from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { CreateUserDto } from '../users/dto/create-user.dto'
 import { UsersService } from '../users/users.service'
@@ -31,14 +35,16 @@ export class AuthService {
     const user = await this.usersService.findOneByEmail(createUserDto.email)
 
     if (user) {
-      throw new BadRequestException('Email already in use')
+      throw new BadRequestException('email already in use')
     }
 
-    const newUser = await this.usersService.create(createUserDto)
-
-    const payload = { email: newUser.email, sub: newUser._id }
-    return {
-      access_token: this.jwtService.sign(payload)
+    try {
+      const newUser = await this.usersService.create(createUserDto)
+      return newUser
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'an error occurred while creating the user'
+      )
     }
   }
 

@@ -51,7 +51,7 @@ class Location {
   @Prop()
   country: string
 
-  @Prop()
+  @Prop({ index: true })
   city: string
 }
 
@@ -105,7 +105,7 @@ export class Company {
   @Prop()
   category: string
 
-  @Prop([String])
+  @Prop({ type: [String], index: true })
   workspace: string[]
 
   @Prop({ type: Contacts })

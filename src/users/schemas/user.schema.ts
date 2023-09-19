@@ -22,8 +22,8 @@ export class User {
   @Prop({ default: UserStatus.Pending, enum: UserStatus })
   status: UserStatus
 
-  @Prop()
-  refreshToken: string[]
+  // @Prop()
+  // refreshToken: string[]
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)

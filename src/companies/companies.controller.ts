@@ -77,7 +77,7 @@ export class CompaniesController {
       await this.companiesService.addImagePath(id, cloudDestination)
       return { message: 'File uploaded successfully' }
     } catch (error) {
-      throw new Error(error.message)
+      throw new InternalServerErrorException('error while uploading image')
     }
   }
 
@@ -114,7 +114,10 @@ export class CompaniesController {
       await this.companiesService.updateImagePath(id, path, cloudDestination)
       return { message: 'File uploaded successfully' }
     } catch (error) {
-      throw new Error(error.message)
+      throw new InternalServerErrorException(
+        'error while updating file: ',
+        error.message
+      )
     }
   }
 
@@ -203,7 +206,10 @@ export class CompaniesController {
       await this.companiesService.addLogoPath(id, cloudDestination)
       return { message: 'File uploaded successfully' }
     } catch (error) {
-      throw new Error(error.message)
+      throw new InternalServerErrorException(
+        'error while uploading logo: ',
+        error.message
+      )
     }
   }
 
