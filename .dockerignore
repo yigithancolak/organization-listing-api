@@ -1,7 +1,7 @@
 **/*.test.ts
 **/*.spec.ts
 **/test/
-**/__mock__/
+**/__mocks__/
 docs/
 .git/
 node_modules/
