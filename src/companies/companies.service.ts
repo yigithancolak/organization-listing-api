@@ -18,6 +18,10 @@ export class CompaniesService {
     private storageService: StorageService
   ) {}
 
+  async findOne(id: string) {
+    return await this.companyModel.findOne({ _id: id })
+  }
+
   async create(createCompanyDto: CreateCompanyDto, userId: string) {
     const createCompany = new this.companyModel({
       owner: userId,

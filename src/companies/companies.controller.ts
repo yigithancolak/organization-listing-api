@@ -4,8 +4,10 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   InternalServerErrorException,
   MaxFileSizeValidator,
+  NotFoundException,
   Param,
   ParseFilePipe,
   Patch,
@@ -26,6 +28,17 @@ export class CompaniesController {
     private readonly companiesService: CompaniesService,
     private readonly storageService: StorageService
   ) {}
+
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    const foundCompany = await this.companiesService.findOne(id)
+
+    if (!foundCompany) {
+      throw new NotFoundException('company not found')
+    }
+
+    return foundCompany
+  }
 
   @Post('/search')
   async getCompanies(@Body() body: GetCompaniesDto) {
